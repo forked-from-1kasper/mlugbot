@@ -3,6 +3,8 @@ import say
 import bot
 from time import sleep
 
+SLEEP_TIME = 2
+
 class Bot:
     def __init__(self, sessionid, token, last_uuid, functions):
         self.sessionid = sessionid
@@ -32,6 +34,6 @@ class Bot:
                             say.send_message(msg, self.token, sessionid=self.sessionid)
 
             print("Sleep")
-            sleep(0.1)
+            sleep(SLEEP_TIME)
             print("[done]")
 
