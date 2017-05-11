@@ -1,0 +1,37 @@
+#! /usr/bin/env python3
+import say
+import bot
+from time import sleep
+
+class Bot:
+    def __init__(self, sessionid, token, last_uuid, functions):
+        self.sessionid = sessionid
+        self.token = token
+        self.last_uuid = last_uuid
+        if not last_uuid:
+            self.last_uuid = bot.get_last_uuid(self.token, self.sessionid)
+
+        self.functions = functions
+
+    def run(self):
+        current_uuid = self.last_uuid
+
+        while True:
+            print("Try to grab messages")
+            posts = bot.get_last_messages(current_uuid, self.token, self.sessionid)
+            print("[done]")
+
+            if len(posts['messages']) > 0:
+                current_uuid = posts['messages'][-1][0]
+
+            for uuid, time, name, msg in posts['messages']:
+                for func in self.functions:
+                    buff = func(uuid, time, name, msg)
+                    if bool(buff):
+                        for msg in buff:
+                            say.send_message(msg, self.token, sessionid=self.sessionid)
+
+            print("Sleep")
+            sleep(0.1)
+            print("[done]")
+
