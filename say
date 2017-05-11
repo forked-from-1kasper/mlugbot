@@ -8,21 +8,27 @@ import requests
 
 place = "/chat/%s/message" % room
 
-def send_message(msg, token, sessionid=False):
-    data = {"csrfmiddlewaretoken": token, \
-            "message": msg}
 
-    headers = {"Conetent-type": "application/x-www-form-urlencoded", \
-               "Accept": "text/plain", \
+def send_message(msg, token, sessionid=False):
+    data = {"csrfmiddlewaretoken": token,
+            "message": msg}
+    headers = {"Conetent-type": "application/x-www-form-urlencoded",
+               "Accept": "text/plain",
                "Referer": "https://beta.mlug.ru/chat/tsmr"}
 
     jar = requests.cookies.RequestsCookieJar()
     jar.set("csrftoken", token, domain="beta.mlug.ru", path="/")
-    if sessionid != False:
+    if sessionid:
         jar.set("sessionid", sessionid, domain="beta.mlug.ru", path="/")
 
-    return requests.post(dest + place, data=data, headers=headers, cookies=jar, allow_redirects=False)
+    return requests.post(dest + place,
+                         data=data,
+                         headers=headers,
+                         cookies=jar,
+                         allow_redirects=False)
 
+usage = ('say --token [token] --sessionid (sessionid) '
+         '[--without-uuid] [--print-request]')
 if __name__ == "__main__":
     without_uuid = get_bool_argument(argv, '--without-uuid')
     print_request = get_bool_argument(argv, '--print-request')
@@ -30,7 +36,7 @@ if __name__ == "__main__":
     token = get_argument(argv, '--token')
 
     if not token or get_bool_argument(argv, '--help'):
-        print('say --token [token] --sessionid (sessionid) [--without-uuid] [--print-request]')
+        print(usage)
         exit(1)
 
     message = stdin.read()
@@ -43,4 +49,3 @@ if __name__ == "__main__":
     req = send_message(msg, token, sessionid=sessionid)
     if print_request:
         print(req.text)
-

@@ -6,19 +6,24 @@ from prepare_arguments import get_argument, get_bool_argument
 
 place = "/id/login"
 
+
 def login(name, password, token="False"):
-    headers = {"Conetent-type": "application/x-www-form-urlencoded", \
-               "Accept": "text/plain", \
+    headers = {"Conetent-type": "application/x-www-form-urlencoded",
+               "Accept": "text/plain",
                "Referer": "https://beta.mlug.ru"}
 
-    data = {"csrfmiddlewaretoken": token, \
-            "username": name, \
+    data = {"csrfmiddlewaretoken": token,
+            "username": name,
             "password": password}
 
     jar = requests.cookies.RequestsCookieJar()
     jar.set("csrftoken", token, domain="beta.mlug.ru", path="/")
 
-    r = requests.post(dest + place, data=data, headers=headers, cookies=jar, allow_redirects=False)
+    r = requests.post(dest + place,
+                      data=data,
+                      headers=headers,
+                      cookies=jar,
+                      allow_redirects=False)
     return dict(r.cookies)["sessionid"]
 
 if __name__ == "__main__":
@@ -31,4 +36,3 @@ if __name__ == "__main__":
     id = login(name, password)
 
     print(id)
-

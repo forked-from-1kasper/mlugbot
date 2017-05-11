@@ -6,16 +6,19 @@ from constants import *
 from prepare_arguments import get_argument, get_bool_argument
 
 req_url = dest + ("/chat/%s/poll" % room)
+usage = 'Usage: bot --uuid (uuid) --token (token) --sessionid (sessionid)'
+
+
 def get_last_messages(uuid, token, sessionid):
     if not uuid:
         uuid = ''
 
     jar = requests.cookies.RequestsCookieJar()
 
-    if token != False:
-       jar.set("csrftoken", token, domain="beta.mlug.ru", path="/")
-    if sessionid != False:
-       jar.set("sessionid", sessionid, domain="beta.mlug.ru", path="/")
+    if token:
+        jar.set("csrftoken", token, domain="beta.mlug.ru", path="/")
+    if sessionid:
+        jar.set("sessionid", sessionid, domain="beta.mlug.ru", path="/")
 
     r = requests.get(req_url + ('?uuid=%s' % (uuid)), cookies=jar)
 
@@ -26,6 +29,7 @@ def get_last_messages(uuid, token, sessionid):
         raise IndexError("Bad status code: %i" % r.status_code)
 
     return data
+
 
 def get_last_uuid(token, sessionid):
     posts = get_last_messages('', token, sessionid)
@@ -40,8 +44,7 @@ if __name__ == "__main__":
     token = get_argument(argv, '--token')
     sessionid = get_argument(argv, '--sessionid')
     if get_bool_argument(argv, '--help'):
-        print('Usage: bot --uuid (uuid) --token (token) --sessionid (sessionid)')
+        print(usage)
         exit(1)
     else:
         print(get_last_messages(uuid, token, sessionid))
-
