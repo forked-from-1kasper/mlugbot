@@ -39,5 +39,9 @@ if __name__ == "__main__":
     uuid = get_argument(argv, '--uuid')
     token = get_argument(argv, '--token')
     sessionid = get_argument(argv, '--sessionid')
-    print(get_last_messages(uuid, token, sessionid))
+    if get_bool_argument(argv, '--help'):
+        print('Usage: bot --uuid (uuid) --token (token) --sessionid (sessionid)')
+        exit(1)
+    else:
+        print(get_last_messages(uuid, token, sessionid))
 

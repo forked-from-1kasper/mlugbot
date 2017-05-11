@@ -29,7 +29,7 @@ if __name__ == "__main__":
     sessionid = get_argument(argv, '--sessionid')
     token = get_argument(argv, '--token')
 
-    if not token:
+    if not token or get_bool_argument(argv, '--help'):
         print('say --token [token] --sessionid (sessionid) [--without-uuid] [--print-request]')
         exit(1)
 

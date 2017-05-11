@@ -24,7 +24,7 @@ def login(name, password, token="False"):
 if __name__ == "__main__":
     name = get_argument(argv, '--username')
     password = get_argument(argv, '--password')
-    if (not name) or (not password):
+    if (not name) or (not password) or get_bool_argument(argv, '--help'):
         print('Usage: login --username [username] --password [password]')
         exit(1)
 
