@@ -2,7 +2,7 @@
 import botbase
 import getrandom
 from sys import argv
-from prepare_arguments import get_argument
+from prepare_arguments import get_argument, get_bool_argument
 
 token = "bot"
 sessionid = False

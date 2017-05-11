@@ -21,7 +21,7 @@ def send_message(msg, token, sessionid=False):
     if sessionid != False:
         jar.set("sessionid", sessionid, domain="beta.mlug.ru", path="/")
 
-    return requests.post(dest + place, data=data, headers=headers, cookies=jar)
+    return requests.post(dest + place, data=data, headers=headers, cookies=jar, allow_redirects=False)
 
 if __name__ == "__main__":
     without_uuid = get_bool_argument(argv, '--without-uuid')

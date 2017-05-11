@@ -2,7 +2,7 @@
 import requests
 from sys import argv, exit
 from constants import *
-from prepare_arguments import get_argument
+from prepare_arguments import get_argument, get_bool_argument
 
 place = "/id/login"
 
