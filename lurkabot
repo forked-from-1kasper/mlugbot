@@ -4,6 +4,7 @@ import getrandom
 from sys import argv
 from prepare_arguments import get_argument, get_bool_argument
 from uuid import uuid1
+from random import randint
 
 token = "bot"
 sessionid = False
@@ -17,9 +18,9 @@ if (not token) or get_bool_argument(argv, '--help'):
     print(usage)
     exit(1)
 
-censored = ["хуй", "пизда", "ебля", "залупа", "жобе", "петух"]
+censored = ["хуй", "пизда", "залупа", "жобе", "петух"]
 copypaste_file = "/home/kasper/src/txt/copypaste/lurka1/lurka1"
-antifaggot = "%s, пидорас, не матерись, хули ты '%s' сказал-то (%s)"
+antifaggot = "%s – %s – не матерись, хули ты '%s' сказал-то (%s)"
 
 
 def filter_word(uuid, time, name, msg):
@@ -27,7 +28,8 @@ def filter_word(uuid, time, name, msg):
     for word in msg.split(' '):
         if word in censored:
             print("[write thread] faggot")
-            result.append(antifaggot % (name, word, time))
+            random_petuh = antifaggot[randint(0, len(antifaggot) - 1)]
+            result.append(antifaggot % (name, random_petuh, word, time))
     return result
 
 
