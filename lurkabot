@@ -3,6 +3,7 @@ import botbase
 import getrandom
 from sys import argv
 from prepare_arguments import get_argument, get_bool_argument
+from uuid import uuid1
 
 token = "bot"
 sessionid = False
@@ -39,7 +40,7 @@ def get_pasta(uuid, time, name, msg):
 def not_alice(uuid, time, name, msg):
     if name == "Alice":
         print("Alice detected")
-        return ["Kinder, Küche, Kirche!"]
+        return ["Kinder, Küche, Kirche! -> %s" % (uuid1())]
 
 
 functions = [filter_word, get_pasta, not_alice]
