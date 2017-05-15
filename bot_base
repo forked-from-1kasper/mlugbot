@@ -20,10 +20,10 @@ class Bot:
         current_uuid = self.last_uuid
 
         while True:
-            print("Try to grab messages")
+            print("[read thread] try to grab messages")
             posts = bot.get_last_messages(current_uuid, self.token,
                                           self.sessionid)
-            print("[done]")
+            print("[read thread] done")
 
             if len(posts['messages']) > 0:
                 current_uuid = posts['messages'][-1][0]
@@ -36,6 +36,6 @@ class Bot:
                             say.send_message(msg, self.token,
                                              sessionid=self.sessionid)
 
-            print("Sleep")
+            print("[read thread] sleep")
             sleep(SLEEP_TIME)
-            print("[done]")
+            print("[read thread] done")

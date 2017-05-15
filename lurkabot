@@ -26,20 +26,20 @@ def filter_word(uuid, time, name, msg):
     result = []
     for word in msg.split(' '):
         if word in censored:
-            print("faggot")
+            print("[write thread] faggot")
             result.append(antifaggot % (name, word, time))
     return result
 
 
 def get_pasta(uuid, time, name, msg):
     if "дай пасты" in msg:
-        print("pasta request")
+        print("[write thread] pasta request")
         return [getrandom.get_random_from_file(copypaste_file)]
 
 
 def not_alice(uuid, time, name, msg):
     if name == "Alice":
-        print("Alice detected")
+        print("[write thread] Alice detected")
         return ["Kinder, Küche, Kirche! -> %s" % (uuid1())]
 
 
