@@ -36,6 +36,12 @@ def get_pasta(uuid, time, name, msg):
         return [getrandom.get_random_from_file(copypaste_file)]
 
 
-functions = [filter_word, get_pasta]
+def not_alice(uuid, time, name, msg):
+    if name == "Alice":
+        print("Alice detected")
+        return ["Kinder, Küche, Kirche!"]
+
+
+functions = [filter_word, get_pasta, not_alice]
 bot = botbase.Bot(sessionid, token, last_uuid, functions)
 bot.run()
