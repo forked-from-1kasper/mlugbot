@@ -20,7 +20,7 @@ if (not token) or get_bool_argument(argv, '--help'):
 
 censored = ["хуй", "пизда", "залупа", "жобе", "петух"]
 copypaste_file = "/home/kasper/src/txt/copypaste/lurka1/lurka1"
-antifaggot = "%s – %s – не матерись, хули ты '%s' сказал-то (%s)"
+antifaggot = "%s – %s – не матерись, хули ты '%s' сказал-то (%s) -> %s"
 
 
 def filter_word(uuid, time, name, msg):
@@ -29,7 +29,7 @@ def filter_word(uuid, time, name, msg):
         if word in censored:
             print("[write thread] faggot")
             random_petuh = censored[randint(0, len(censored) - 1)]
-            result.append(antifaggot % (name, random_petuh, word, time))
+            result.append(antifaggot % (name, random_petuh, word, time, uuid1()))
     return result
 
 
