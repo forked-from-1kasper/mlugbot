@@ -28,7 +28,7 @@ def filter_word(uuid, time, name, msg):
     for word in msg.split(' '):
         if word in censored:
             print("[write thread] faggot")
-            random_petuh = censored[randint(0, len(antifaggot) - 1)]
+            random_petuh = censored[randint(0, len(censored) - 1)]
             result.append(antifaggot % (name, random_petuh, word, time))
     return result
 
