@@ -5,7 +5,7 @@
 
 Без uuid: `say --token токен --without-uuid`
 
-Залогиниться: `login --username [имя пользователя] --password [пароль] (вернёт sessionid)`
+Залогиниться: `login --username [имя пользователя] --password [пароль]` (вернёт sessionid)
 
 Запуск луркабота: `lurkabot --token токен --sessionid [ваш sessionid]`
 
