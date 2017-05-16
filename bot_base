@@ -8,7 +8,8 @@ SLEEP_TIME = 2
 
 
 class Bot:
-    def __init__(self, sessionid, token, last_uuid, functions, read_from_anon=False):
+    def __init__(self, sessionid, token, last_uuid,
+                 functions, read_from_anon=False):
         self.sessionid = sessionid
         self.token = token
         self.last_uuid = last_uuid
