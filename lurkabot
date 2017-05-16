@@ -40,10 +40,18 @@ def get_pasta(uuid, time, name, msg):
         return [getrandom.get_random_from_file(copypaste_file)]
 
 
+alice_gut = ["Kinder, Küche, Kirche! -> %s",
+             "I habe dich, Alice. -> %s",
+             "Ja, ja. -> %s",
+             "Ich habe drei Schweinen. -> %s",
+             "Meine Ehre Heißt Treue! -> %s"]
+
+
 def not_alice(uuid, time, name, msg):
     if name == "Alice":
         print("[write thread] Alice detected")
-        return ["Kinder, Küche, Kirche! -> %s" % (uuid1())]
+        random_alice = alice_gut[randint(0, len(alice_gut) - 1)]
+        return [random_alice % (uuid1())]
 
 
 functions = [filter_word, get_pasta, not_alice]
