@@ -2,6 +2,7 @@
 import say
 import bot
 from time import sleep
+from html.parser import HTMLParser
 
 SLEEP_TIME = 2
 
@@ -15,6 +16,8 @@ class Bot:
             self.last_uuid = bot.get_last_uuid(self.token, self.sessionid)
 
         self.functions = functions
+        self.ignore = []
+        self.HTMLParser = HTMLParser()
 
     def run(self):
         current_uuid = self.last_uuid
@@ -29,12 +32,18 @@ class Bot:
                 current_uuid = posts['messages'][-1][0]
 
             for uuid, time, name, msg in posts['messages']:
+                msg = self.HTMLParser.unescape(msg)
+                if msg in self.ignore:
+                    self.ignore.remove(msg)
+                    print("[write thread] skipped")
+                    continue
                 for func in self.functions:
                     buff = func(uuid, time, name, msg)
                     if bool(buff):
                         for msg in buff:
                             say.send_message(msg, self.token,
                                              sessionid=self.sessionid)
+                            self.ignore.append(msg)
 
             print("[read thread] sleep")
             sleep(SLEEP_TIME)
