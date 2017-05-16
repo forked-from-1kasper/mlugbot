@@ -8,24 +8,31 @@ SLEEP_TIME = 2
 
 
 class Bot:
-    def __init__(self, sessionid, token, last_uuid, functions):
+    def __init__(self, sessionid, token, last_uuid, functions, read_from_anon=False):
         self.sessionid = sessionid
         self.token = token
         self.last_uuid = last_uuid
         if not last_uuid:
-            self.last_uuid = bot.get_last_uuid(self.token, self.sessionid)
+            if read_from_anon:
+                self.last_uuid = bot.get_last_uuid(None, None)
+            else:
+                self.last_uuid = bot.get_last_uuid(self.token, self.sessionid)
 
         self.functions = functions
         self.ignore = []
         self.HTMLParser = HTMLParser()
+        self.read_from_anon = read_from_anon
 
     def run(self):
         current_uuid = self.last_uuid
 
         while True:
             print("[read thread] try to grab messages")
-            posts = bot.get_last_messages(current_uuid, self.token,
-                                          self.sessionid)
+            if self.read_from_anon:
+                posts = bot.get_last_messages(current_uuid, None, None)
+            else:
+                posts = bot.get_last_messages(current_uuid, self.token,
+                                              self.sessionid)
             print("[read thread] done")
 
             if len(posts['messages']) > 0:

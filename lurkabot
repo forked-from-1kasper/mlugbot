@@ -6,14 +6,15 @@ from prepare_arguments import get_argument, get_bool_argument
 from uuid import uuid1
 from random import randint
 
-token = "bot"
+token = None
 sessionid = False
 
 last_uuid = get_argument(argv, '--uuid')
 sessionid = get_argument(argv, '--sessionid')
 token = get_argument(argv, '--token')
+read_from_anon = get_bool_argument(argv, '--anon-read')
 
-usage = "Usage: lurkabot --uuid (uuid) --token [token] --sessionid (sessionid)"
+usage = "Usage: lurkabot --uuid (uuid) --token [token] --sessionid (sessionid) [--anon-read]"
 if (not token) or get_bool_argument(argv, '--help'):
     print(usage)
     exit(1)
@@ -55,5 +56,5 @@ def not_alice(uuid, time, name, msg):
 
 
 functions = [filter_word, get_pasta, not_alice]
-bot = botbase.Bot(sessionid, token, last_uuid, functions)
+bot = botbase.Bot(sessionid, token, last_uuid, functions, read_from_anon=read_from_anon)
 bot.run()
