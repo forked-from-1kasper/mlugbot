@@ -4,7 +4,7 @@ import getrandom
 from sys import argv
 from prepare_arguments import get_argument, get_bool_argument
 from uuid import uuid1
-from random import randint
+from random import randint, choice
 
 token = None
 sessionid = False
@@ -42,18 +42,59 @@ def get_pasta(uuid, time, name, msg):
         return [getrandom.get_random_from_file(copypaste_file)]
 
 
-alice_gut = ["Kinder, Küche, Kirche! -> %s",
-             "I habe dich, Alice. -> %s",
-             "Ja, ja. -> %s",
-             "Ich habe drei Schweinen. -> %s",
-             "Meine Ehre Heißt Treue! -> %s"]
+def generate_chain(src):
+    src = src.split()
+    src = list(map(lambda c: c[:-1] if c[-1] == "," else c,
+                   src))
+    dest = {}
+    src = ["*START*"] + src + ["*END*"]
+
+    for i in range(0, len(src) - 1):
+        word = src[i]
+        if word != "*END*":
+            next = src[i + 1]
+            if word in dest:
+                dest[word].append(next)
+            else:
+                dest[word] = [next]
+
+    return dest
+
+
+def add_dict_with_list(a, b):
+    buff = a.copy()
+    for elem in b:
+        if elem in buff:
+            buff[elem] += b[elem]
+        else:
+            buff[elem] = b[elem]
+
+    return buff
+
+
+fin = open("delusional.txt", 'r')
+text = fin.read()
+fin.close()
+
+text = text.replace("?", ".")
+text = text.replace("!", ".")
+text = text.split(". ")
+deutsch = {}
+for addition in text:
+    deutsch = add_dict_with_list(deutsch, generate_chain(addition))
 
 
 def not_alice(uuid, time, name, msg):
-    if name == "Alice":
+    if (name == "Alice") or ("бред" in msg):
         print("[write thread] Alice detected")
-        random_alice = alice_gut[randint(0, len(alice_gut) - 1)]
-        return [random_alice % (uuid1())]
+        msg = ""
+        current_word = "*START*"
+        while current_word != "*END*":
+            current_word = choice(deutsch[current_word])
+            if current_word != "*END*":
+                msg += current_word + " "
+
+        return [(msg + " -> %s") % (uuid1())]
 
 
 functions = [filter_word, get_pasta, not_alice]
