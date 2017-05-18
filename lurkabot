@@ -1,10 +1,13 @@
 #! /usr/bin/env python3
 import botbase
 import getrandom
+import pickle
+import threading
 from sys import argv
 from prepare_arguments import get_argument, get_bool_argument
 from uuid import uuid1
-from random import randint, choice
+from random import randint, choice, random
+from time import sleep
 
 token = None
 sessionid = False
@@ -25,6 +28,7 @@ copypaste_file = "/home/kasper/src/txt/copypaste/lurka1/lurka1"
 antifaggot = "%s – %s – не матерись, хули ты '%s' сказал-то (%s) -> %s"
 
 
+"""
 def filter_word(uuid, time, name, msg):
     result = []
     for word in msg.split(' '):
@@ -34,12 +38,15 @@ def filter_word(uuid, time, name, msg):
             result.append(antifaggot % (name, random_petuh,
                                         word, time, uuid1()))
     return result
+"""
 
 
+"""
 def get_pasta(uuid, time, name, msg):
     if "дай пасты" in msg:
         print("[write thread] pasta request")
         return [getrandom.get_random_from_file(copypaste_file)]
+"""
 
 
 def generate_chain(src):
@@ -72,19 +79,44 @@ def add_dict_with_list(a, b):
     return buff
 
 
-fin = open("delusional.txt", 'r')
-text = fin.read()
-fin.close()
+#fin = open("ru.delusional.txt", 'r')
+#text = fin.read()
+#fin.close()
 
-text = text.replace("?", ".")
-text = text.replace("!", ".")
-text = text.split(". ")
+#text = text.replace("?", ".")
+#text = text.replace("!", ".")
+#text = text.split(". ")
+#deutsch = {}
+#for addition in text:
+#    deutsch = add_dict_with_list(deutsch, generate_chain(addition))
+
 deutsch = {}
-for addition in text:
-    deutsch = add_dict_with_list(deutsch, generate_chain(addition))
+file_name = "delusional.pickle"
+f = open(file_name, 'rb')
+
+try:
+    deutsch = pickle.load(f)
+except EOFError:
+    print("[init thread] warning: db is empty")
+f.close()
 
 
-def not_alice(uuid, time, name, msg):
+def save_db():
+    while True:
+        print("[save thread] db saving started")
+        f = open(file_name, 'wb')
+        pickle.dump(deutsch, f)
+        f.close()
+
+        print("[save thread] save done")
+        print("[save thread] sleep")
+        sleep(2)
+        print("[save thread] sleep done")
+
+
+def delusional(uuid, time, name, msg):
+    global deutsch
+    deutsch = add_dict_with_list(deutsch, generate_chain(msg))
     if (name == "Alice") or ("бред" in msg):
         print("[write thread] Alice detected")
         msg = ""
@@ -97,7 +129,13 @@ def not_alice(uuid, time, name, msg):
         return [(msg + " -> %s") % (uuid1())]
 
 
-functions = [filter_word, get_pasta, not_alice]
+saver = threading.Thread(target=save_db)
+
+functions = [delusional]
 bot = botbase.Bot(sessionid, token, last_uuid,
                   functions, read_from_anon=read_from_anon)
+
+saver.start()
 bot.run()
+
+saver.join()
