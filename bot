@@ -6,7 +6,7 @@ from constants import *
 from prepare_arguments import get_argument, get_bool_argument
 
 req_url = dest + ("/chat/%s/poll" % room)
-usage = 'Usage: bot --uuid (uuid) --token (token) --sessionid (sessionid)'
+usage = 'Usage: bot --uuid [uuid] --token [token] --sessionid [sessionid] [--get-last-uuid]'
 
 
 def get_last_messages(uuid, token, sessionid):
@@ -46,5 +46,7 @@ if __name__ == "__main__":
     if get_bool_argument(argv, '--help'):
         print(usage)
         exit(1)
+    elif get_bool_argument(argv,  '--get-last-uuid') or not token:
+        print(get_last_uuid(token, sessionid))
     else:
         print(get_last_messages(uuid, token, sessionid))
