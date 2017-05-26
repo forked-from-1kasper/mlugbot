@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 import say
-import bot
+import readmessages
 from time import sleep
 from html.parser import HTMLParser
 
@@ -15,9 +15,9 @@ class Bot:
         self.last_uuid = last_uuid
         if not last_uuid:
             if read_from_anon:
-                self.last_uuid = bot.get_last_uuid(None, None)
+                self.last_uuid = readmessages.get_last_uuid(None, None)
             else:
-                self.last_uuid = bot.get_last_uuid(self.token, self.sessionid)
+                self.last_uuid = readmessages.get_last_uuid(self.token, self.sessionid)
 
         self.functions = functions
         self.ignore = []
@@ -30,10 +30,10 @@ class Bot:
         while True:
             print("[read thread] try to grab messages")
             if self.read_from_anon:
-                posts = bot.get_last_messages(current_uuid, None, None)
+                posts = readmessages.get_last_messages(current_uuid, None, None)
             else:
-                posts = bot.get_last_messages(current_uuid, self.token,
-                                              self.sessionid)
+                posts = readmessages.get_last_messages(current_uuid, self.token,
+                                                       self.sessionid)
             print("[read thread] done")
 
             if len(posts['messages']) > 0:
