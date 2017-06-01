@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
-import say
-import readmessages
+import mlugbot.say as say
+import mlugbot.readmessages as readmessages
 from time import sleep
 from html.parser import HTMLParser
 
