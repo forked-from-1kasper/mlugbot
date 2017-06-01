@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 from sys import argv, exit, stdin
 from uuid import uuid1
-from constants import *
-from prepare_arguments import get_bool_argument, get_argument
+from mlugbot.constants import *
+from mlugbot.prepare_arguments import get_bool_argument, get_argument
 import requests
 
 place = "/chat/%s/message" % room

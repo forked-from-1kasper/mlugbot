@@ -1,8 +1,8 @@
 #! /usr/bin/env python3
 import requests
 from sys import argv, exit
-from constants import *
-from prepare_arguments import get_argument, get_bool_argument
+from mlugbot.constants import *
+from mlugbot.prepare_arguments import get_argument, get_bool_argument
 
 place = "/id/login"
 
