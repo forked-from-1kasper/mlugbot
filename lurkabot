@@ -117,7 +117,7 @@ def save_db():
 def delusional(uuid, time, name, msg):
     global deutsch
     deutsch = add_dict_with_list(deutsch, generate_chain(msg))
-    if random() > 0.8:
+    if random() > 0.6:
         print("[write thread] Alice detected")
         msg = ""
         current_word = "*START*"
