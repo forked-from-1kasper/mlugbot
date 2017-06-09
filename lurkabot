@@ -126,7 +126,7 @@ def delusional(uuid, time, name, msg):
             if current_word != "*END*":
                 msg += current_word + " "
 
-        return [msg + (" -> %s" % str(uuid1()))]
+        return [msg]
 
 
 saver = threading.Thread(target=save_db)
