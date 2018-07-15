@@ -1,13 +1,14 @@
 #! /usr/bin/env python3
 import requests
 from sys import argv, exit
-from mlugbot.constants import *
+from uuid import uuid1
+import mlugbot.constants as constants
 from mlugbot.prepare_arguments import get_argument, get_bool_argument
 
 place = "/id/login"
 
 
-def login(name, password, token="False"):
+def login(name, password, token):
     headers = {"Conetent-type": "application/x-www-form-urlencoded",
                "Accept": "text/plain",
                "Referer": "https://beta.mlug.ru"}
@@ -17,9 +18,9 @@ def login(name, password, token="False"):
             "password": password}
 
     jar = requests.cookies.RequestsCookieJar()
-    jar.set("csrftoken", token, domain="beta.mlug.ru", path="/")
+    jar.set("csrftoken", token, domain=constants.domain, path="/")
 
-    r = requests.post(dest + place,
+    r = requests.post(constants.dest + place,
                       data=data,
                       headers=headers,
                       cookies=jar,
@@ -27,12 +28,10 @@ def login(name, password, token="False"):
     return dict(r.cookies)["sessionid"]
 
 if __name__ == "__main__":
-    name = get_argument(argv, '--username')
-    password = get_argument(argv, '--password')
-    if (not name) or (not password) or get_bool_argument(argv, '--help'):
+    name = get_argument('--username')
+    password = get_argument('--password')
+    if (name is None) or (password is None) or get_bool_argument('--help'):
         print('Usage: login --username [username] --password [password]')
         exit(1)
 
-    id = login(name, password)
-
-    print(id)
+    print(login(name, password, "AnalGay"))

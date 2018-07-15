@@ -1,44 +1,44 @@
 #! /usr/bin/env python3
 import mlugbot.botbase as botbase
+from mlugbot.readmessages import Message
+from mlugbot.constants import option_map
 import getrandom
 import pickle
 import threading
 from sys import argv
 from prepare_arguments import get_argument, get_bool_argument
-from uuid import uuid1
+from uuid import uuid1, UUID
 from random import randint, choice, random
 from time import sleep
 
-token = None
-sessionid = False
+from typing import Optional, TypeVar, Callable, Dict, List
 
-last_uuid = get_argument(argv, '--uuid')
-sessionid = get_argument(argv, '--sessionid')
-token = get_argument(argv, '--token')
-read_from_anon = get_bool_argument(argv, '--anon-read')
+last_uuid = option_map(get_argument('--uuid'), lambda s: UUID(s))
+
+sessionid = get_argument('--sessionid')
+token = get_argument('--token')
+read_from_anon = get_bool_argument('--anon-read')
 
 usage = ("Usage: lurkabot --uuid (uuid) --token [token]"
          "--sessionid (sessionid) [--anon-read]")
-if (not token) or get_bool_argument(argv, '--help'):
+if (token is None) or get_bool_argument('--help'):
     print(usage)
     exit(1)
 
 censored = ["хуй", "пизда", "залупа", "жобе", "петух"]
 copypaste_file = "/home/kasper/src/txt/copypaste/lurka1/lurka1"
-antifaggot = "%s – %s – не матерись, хули ты '%s' сказал-то (%s) -> %s"
+antifaggot = "%s — %s — не матерись, хули ты '%s' сказал-то (%s) -> %s"
 
 
-"""
-def filter_word(uuid, time, name, msg):
+def filter_word(msg: Message) -> List[str]:
     result = []
-    for word in msg.split(' '):
+    for word in msg.text.split(' '):
         if word in censored:
             print("[write thread] faggot")
             random_petuh = censored[randint(0, len(censored) - 1)]
-            result.append(antifaggot % (name, random_petuh,
-                                        word, time, uuid1()))
+            result.append(antifaggot % (msg.name, random_petuh,
+                                        word, msg.time, uuid1()))
     return result
-"""
 
 
 """
@@ -49,7 +49,7 @@ def get_pasta(uuid, time, name, msg):
 """
 
 
-def generate_chain(src):
+def generate_chain(src: str):
     src = src.split()
     src = list(map(lambda c: c[:-1] if c[-1] == "," else c,
                    src))
@@ -90,22 +90,22 @@ def add_dict_with_list(a, b):
 #for addition in text:
 #    deutsch = add_dict_with_list(deutsch, generate_chain(addition))
 
-deutsch = {}
+deutsch_raw: Dict[str, List[str]] = {}
 file_name = "delusional.pickle"
 f = open(file_name, 'rb')
 
 try:
-    deutsch = pickle.load(f)
+    deutsch_raw = pickle.load(f)
 except EOFError:
     print("[init thread] warning: db is empty")
 f.close()
 
 
-def save_db():
+def save_db() -> None:
     while True:
         print("[save thread] db saving started")
         f = open(file_name, 'wb')
-        pickle.dump(deutsch, f)
+        pickle.dump(deutsch_raw, f)
         f.close()
 
         print("[save thread] save done")
@@ -114,28 +114,33 @@ def save_db():
         print("[save thread] sleep done")
 
 
-def delusional(uuid, time, name, msg):
-    global deutsch
-    deutsch = add_dict_with_list(deutsch, generate_chain(msg))
-    if random() > 0.2:
+def delusional(msg: Message) -> List[str]:
+    deutsch = add_dict_with_list(deutsch_raw, generate_chain(msg.text))
+    if (random() > 0.2) or ("жобе" in msg.text.split(' ')):
         print("[write thread] Alice detected")
-        msg = ""
+        generated_msg = ""
         current_word = "*START*"
         while current_word != "*END*":
             current_word = choice(deutsch[current_word])
             if current_word != "*END*":
-                msg += current_word + " "
+                generated_msg += current_word + " "
 
-        return [msg]
+        return [generated_msg]
+    else:
+        return []
 
 
 saver = threading.Thread(target=save_db)
 
-functions = [delusional]
-bot = botbase.Bot(sessionid, token, last_uuid,
-                  functions, read_from_anon=read_from_anon)
+functions: List[Callable[[Message], List[str]]] = [delusional, filter_word]
+
+if (sessionid is not None) and (token is not None):
+    bot = botbase.Bot(sessionid, token, last_uuid,
+                      functions, read_from_anon)
 
 saver.start()
-bot.run()
 
-saver.join()
+try:
+    bot.run()
+finally:
+    saver.join()

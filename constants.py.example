@@ -1,2 +1,19 @@
-dest = "https://mlug.ru"
+from typing import TypeVar, Optional, Callable
+
+dest = "https://beta.mlug.ru"
+domain = "beta.mlug.ru"
 room = "tsmr"
+
+T = TypeVar('T')
+V = TypeVar('V')
+def option_map(x: Optional[T], f: Callable[[T], V]) -> Optional[V]:
+    if x is None:
+        return None
+    else:
+        return f(x)
+
+def option_default(x: Optional[T], default: T) -> T:
+    if x is None:
+        return default
+    else:
+        return x

@@ -1,12 +1,15 @@
-def get_argument(argv, name):
+from typing import Optional
+from sys import argv
+
+def get_argument(name: str) -> Optional[str]:
     if name in argv:
-        id = argv.index(name)
+        id: int = argv.index(name)
         return argv[id + 1]
     else:
-        return False
+        return None
 
 
-def get_bool_argument(argv, name):
+def get_bool_argument(name: str) -> bool:
     if name in argv:
         return True
     else:
