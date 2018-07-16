@@ -32,8 +32,8 @@ antifaggot = "%s — %s — не матерись, хули ты '%s' с
 
 def filter_word(msg: Message) -> List[str]:
     result = []
-    for word in msg.text.split(' '):
-        if word in censored:
+    for word in censored:
+        if word in msg.text:
             print("[write thread] faggot")
             random_petuh = censored[randint(0, len(censored) - 1)]
             result.append(antifaggot % (msg.name, random_petuh,
